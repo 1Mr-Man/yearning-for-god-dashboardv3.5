@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { supabase as defaultSupabase } from '../utils/supabase'
-import { styles as defaultStyles } from '../styles/styles'
+import defaultStyles from '../styles/styles'
 import ResearchWorkspace from './ResearchWorkspace'
 import ProductionWorkspace, { researchIsComplete } from './ProductionWorkspace'
 
