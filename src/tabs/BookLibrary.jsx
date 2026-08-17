@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { supabase as defaultSupabase } from '../utils/supabase'
+import BookImport from './BookImport'
 
 // YFG BOOK JOURNEY — Phase R6 (Book/Chapter foundation) + Phase R7
 // (Chapter Analysis & Source-of-Truth Workspace, see ChapterDetail below).
@@ -512,6 +513,7 @@ export default function BookLibrary({ ctx = {} }) {
   const [form, setForm] = useState({ title: '', author: '', source_format: 'manual_notes' })
   const [openBook, setOpenBook] = useState(null)
   const [openChapter, setOpenChapter] = useState(null)
+  const [openImport, setOpenImport] = useState(false)
 
   async function load() {
     setLoading(true); setErr('')
@@ -533,6 +535,14 @@ export default function BookLibrary({ ctx = {} }) {
   const st = styles.card || fallback.card
   const input = fallback.input
   const btn = fallback.btn
+
+  if (openImport) {
+    return <BookImport
+      supabase={supabase}
+      onClose={() => setOpenImport(false)}
+      onImported={book => { setOpenImport(false); load(); setOpenBook(book) }}
+    />
+  }
 
   if (openChapter) {
     return <ChapterDetail
@@ -567,6 +577,15 @@ export default function BookLibrary({ ctx = {} }) {
 
       {err && <div style={{ ...st, color: '#fecaca' }}>{err}</div>}
       {msg && <div style={{ ...st, color: '#bbf7d0' }}>{msg}</div>}
+
+      <div style={st}>
+        <strong style={{ color: '#D4AF37' }}>Import Book (R9.1 — .txt only)</strong>
+        <p style={{ color: '#94a3b8', fontSize: 13, margin: '6px 0 10px' }}>
+          Upload a plain-text book. Chapter structure is detected and shown for your review before anything is saved —
+          the original text is preserved as-is. PDF, EPUB, and DOCX are not supported yet.
+        </p>
+        <button style={{ ...btn, ...fallback.primary }} onClick={() => setOpenImport(true)}>Import .txt Book</button>
+      </div>
 
       <div style={st}>
         <strong style={{ color: '#D4AF37' }}>Add Book</strong>
